@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test'
 
 import { generateOrderCode } from '../support/helpers'
 
+import {OrderLockupPage } from '../support/pages/OrderLockupPage'
+
 /// AAA - Arrange, Act, Assert
 
 test.describe('Consulta de Pedido', () => {
@@ -19,20 +21,20 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-6E2J20',
+      number: 'VLO-BCRGD4',
       status: 'APROVADO',
-      color: 'Lunar White',
-      wheels: 'aero Wheels',
+      color: 'Glacier Blue',
+      wheels: 'sport Wheels',
       customer: {
-        name: 'Fernando Papito',
-        email: 'papito@velo.dev'
+        name: 'Gabriel Maues',
+        email: 'maumau@velo.dev'
       },
       payment: 'À Vista'
     }
 
     // Act  
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.number)
 
     // Assert
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
@@ -79,7 +81,7 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-0LNFEA',
+      number: 'VLO-X186FV',
       status: 'REPROVADO',
       color: 'Midnight Black',
       wheels: 'sport Wheels',
@@ -91,8 +93,8 @@ test.describe('Consulta de Pedido', () => {
     }
 
     // Act  
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.number)
 
     // Assert
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
@@ -125,33 +127,33 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
+    const statusBadge = page.getByRole('status').filter({ hasText: order.status })
 
-      await expect(statusBadge).toHaveClass(/bg-red-100/)
-      await expect(statusBadge).toHaveClass(/text-red-700/)
-  
-      const statusIcon = statusBadge.locator('svg')
-      await expect(statusIcon).toHaveClass(/lucide-circle-x/)
+    await expect(statusBadge).toHaveClass(/bg-red-100/)
+    await expect(statusBadge).toHaveClass(/text-red-700/)
+
+    const statusIcon = statusBadge.locator('svg')
+    await expect(statusIcon).toHaveClass(/lucide-circle-x/)
   })
 
   test('deve consultar um pedido em analise', async ({ page }) => {
 
     // Test Data
     const order = {
-      number: 'VLO-412O06',
+      number: 'VLO-A6U0IQ',
       status: 'EM_ANALISE',
-      color: 'Lunar White',
+      color: 'Glacier Blue',
       wheels: 'aero Wheels',
       customer: {
-        name: 'João da Silva',
+        name: 'Joao da Silva',
         email: 'joao@velo.dev'
       },
       payment: 'À Vista'
     }
 
     // Act  
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order.number)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order.number)
 
     // Assert
     await expect(page.getByTestId(`order-result-${order.number}`)).toMatchAriaSnapshot(`
@@ -184,22 +186,21 @@ test.describe('Consulta de Pedido', () => {
       - paragraph: /R\\$ \\d+\\.\\d+,\\d+/
       `);
 
-      const statusBadge = page.getByRole('status').filter({ hasText: order.status })
+    const statusBadge = page.getByRole('status').filter({ hasText: order.status })
 
-      await expect(statusBadge).toHaveClass(/bg-amber-100/)
-      await expect(statusBadge).toHaveClass(/text-amber-700/)
-  
-      const statusIcon = statusBadge.locator('svg')
-      await expect(statusIcon).toHaveClass(/lucide-clock/)
+    await expect(statusBadge).toHaveClass(/bg-amber-100/)
+    await expect(statusBadge).toHaveClass(/text-amber-700/)
+
+    const statusIcon = statusBadge.locator('svg')
+    await expect(statusIcon).toHaveClass(/lucide-clock/)
   })
 
   test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
 
     const order = generateOrderCode()
 
-    await page.getByRole('textbox', { name: 'Número do Pedido' }).fill(order)
-    await page.getByRole('button', { name: 'Buscar Pedido' }).click()
-
+    const orderLockupPage = new OrderLockupPage(page)
+    await orderLockupPage.searchOrder(order)
 
     await expect(page.locator('#root')).toMatchAriaSnapshot(`
       - img
