@@ -11,5 +11,3 @@ export function generateOrderCode() {
 
     return `${prefix}-${randomPart}`;
 }
-
-
