@@ -21,13 +21,13 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-6E2J20',
+      number: 'VLO-BCRGD4',
       status: 'APROVADO' as const,
-      color: 'Lunar White',
-      wheels: 'aero Wheels',
+      color: 'Glacier Blue',
+      wheels: 'sport Wheels',
       customer: {
-        name: 'Fernando Papito',
-        email: 'papito@velo.dev'
+        name: 'Gabriel Maues',
+        email: 'maumau@velo.dev'
       },
       payment: 'À Vista'
     }
@@ -76,7 +76,7 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-0LNFEA',
+      number: 'VLO-X186FV',
       status: 'REPROVADO' as const,
       color: 'Midnight Black',
       wheels: 'sport Wheels',
@@ -130,12 +130,12 @@ test.describe('Consulta de Pedido', () => {
 
     // Test Data
     const order = {
-      number: 'VLO-412O06',
+      number: 'VLO-A6U0IQ',
       status: 'EM_ANALISE' as const,
-      color: 'Lunar White',
+      color: 'Glacier Blue',
       wheels: 'aero Wheels',
       customer: {
-        name: 'João da Silva',
+        name: 'Joao da Silva',
         email: 'joao@velo.dev'
       },
       payment: 'À Vista'
