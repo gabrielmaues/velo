@@ -1,218 +1,92 @@
-import { test, expect } from '@playwright/test'
-
-
-
-import { generateOrderCode } from '../support/helpers'
-
-
-import { LandingPage } from '../support/pages/LandingPage'
-import { NavBar } from '../support/components/NavBar'
-import { OrderLockupPage, type OrderDetails } from '../support/pages/OrderLockupPage'
-
-
+import { test } from '../support/fixtures';
+import { generateOrderCode } from '../support/helpers';
+import type { OrderDetails } from '../support/actions/orderLockupActions';
 
 /// AAA - Arrange, Act, Assert
 
-
-
 test.describe('Consulta de Pedido', () => {
-
-  let orderLockupPage: OrderLockupPage
-
-
-  test.beforeEach(async ({ page }) => {
-
+  test.beforeEach(async ({ app }) => {
     // Arrange
-    await new LandingPage(page).goto()
-    await new NavBar(page).orderLockupLink()
+    await app.orderLockup.open();
+  });
 
-    orderLockupPage = new OrderLockupPage(page)
-    await new OrderLockupPage(page).validatePageLoaded()
-
-  })
-
-
-
-  test('deve consultar um pedido aprovado', async ({ page }) => {
-
-
-
+  test('deve consultar um pedido aprovado', async ({ app }) => {
     // Test Data
-
     const order: OrderDetails = {
-
       number: 'VLO-BCRGD4',
-
       status: 'APROVADO',
-
       color: 'Glacier Blue',
-
       wheels: 'sport Wheels',
-
       customer: {
-
         name: 'Gabriel Maues',
-
-        email: 'maumau@velo.dev'
-
+        email: 'maumau@velo.dev',
       },
+      payment: 'À Vista',
+    };
 
-      payment: 'À Vista'
-
-    }
-
-
-
-    // Act  
-
-    await orderLockupPage.searchOrder(order.number)
-
-
+    // Act
+    await app.orderLockup.searchOrder(order.number);
 
     // Assert
+    await app.orderLockup.validateOrderDetails(order);
+    await app.orderLockup.validateStatusBadge(order.status);
+  });
 
-    await orderLockupPage.validateOrderDetails(order)
-
-    await orderLockupPage.validateStatusBadge(order.status)
-
-
-
-  })
-
-
-
-  test('deve consultar um pedido reprovado', async ({ page }) => {
-
-
-
+  test('deve consultar um pedido reprovado', async ({ app }) => {
     // Test Data
-
     const order: OrderDetails = {
-
       number: 'VLO-X186FV',
-
       status: 'REPROVADO',
-
       color: 'Midnight Black',
-
       wheels: 'sport Wheels',
-
       customer: {
-
         name: 'Steve Jobs',
-
-        email: 'jobs@apple.com'
-
+        email: 'jobs@apple.com',
       },
+      payment: 'À Vista',
+    };
 
-      payment: 'À Vista'
-
-    }
-
-
-
-    // Act  
-
-    await orderLockupPage.searchOrder(order.number)
-
-
+    // Act
+    await app.orderLockup.searchOrder(order.number);
 
     // Assert
+    await app.orderLockup.validateOrderDetails(order);
+    await app.orderLockup.validateStatusBadge(order.status);
+  });
 
-    await orderLockupPage.validateOrderDetails(order)
-
-    await orderLockupPage.validateStatusBadge(order.status)
-
-  })
-
-
-
-  test('deve consultar um pedido em analise', async ({ page }) => {
-
-
-
+  test('deve consultar um pedido em analise', async ({ app }) => {
     // Test Data
-
     const order: OrderDetails = {
-
       number: 'VLO-A6U0IQ',
-
       status: 'EM_ANALISE',
-
       color: 'Glacier Blue',
-
       wheels: 'aero Wheels',
-
       customer: {
-
         name: 'Joao da Silva',
-
-        email: 'joao@velo.dev'
-
+        email: 'joao@velo.dev',
       },
+      payment: 'À Vista',
+    };
 
-      payment: 'À Vista'
-
-    }
-
-
-
-    // Act  
-
-    await orderLockupPage.searchOrder(order.number)
-
-
+    // Act
+    await app.orderLockup.searchOrder(order.number);
 
     // Assert
+    await app.orderLockup.validateOrderDetails(order);
+    await app.orderLockup.validateStatusBadge(order.status);
+  });
 
-    await orderLockupPage.validateOrderDetails(order)
+  test('deve exibir mensagem quando o pedido não é encontrado', async ({ app }) => {
+    const order = generateOrderCode();
 
-    await orderLockupPage.validateStatusBadge(order.status)
+    await app.orderLockup.searchOrder(order);
+    await app.orderLockup.validateOrderNotFound();
+  });
 
-  })
+  test('deve exibir mensagem quando o código do pedido está fora do padrão', async ({ app }) => {
+    const order = 'ABC-12345';
 
-
-
-  test('deve exibir mensagem quando o pedido não é encontrado', async ({ page }) => {
-
-
-
-    const order = generateOrderCode()
-
-
-
-    const orderLockupPage = new OrderLockupPage(page)
-
-    await orderLockupPage.searchOrder(order)
-
-
-
-    await orderLockupPage.validateOrderNotFound()
-
-
-
-  })
-
-
-
-  test('deve exibir mensagem quando o código do pedido está fora do padrão', async ({ page }) => {
-
-
-
-    const order = 'ABC-12345'
-
-
-
-    await orderLockupPage.searchOrder(order)
-
-
-
-    await orderLockupPage.validateOrderNotFound()
-
-
-
-  })
-
-})
-
-
+    await app.orderLockup.searchOrder(order);
+    await app.orderLockup.validateOrderNotFound();
+  });
+});
