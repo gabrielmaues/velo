@@ -47,6 +47,12 @@ export function createConfiguratorActions(page: Page) {
     async proceedToCheckout() {
       await page.getByTestId('checkout-button').click();
       await expect(page).toHaveURL(/\/order$/);
+    },
+
+    async expectCheckoutSummaryPrice(price: string) {
+      const summaryPrice = page.getByTestId('summary-total-price');
+      await expect(summaryPrice).toBeVisible();
+      await expect(summaryPrice).toHaveText(price);
     }
   };
 }

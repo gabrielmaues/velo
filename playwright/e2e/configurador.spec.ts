@@ -58,5 +58,8 @@ test.describe('Configurador de Veículo', () => {
 
     // Act / Assert (Passo 4): Checkout redireciona para a tela /order
     await app.configurator.proceedToCheckout();
+
+    // Assert (Passo 5): Preço base persiste no resumo do checkout
+    await app.configurator.expectCheckoutSummaryPrice('R$ 40.000,00');
   });
 });
